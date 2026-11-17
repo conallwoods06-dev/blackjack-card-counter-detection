@@ -16,6 +16,35 @@ def basic_strategy(player_hand: Hand, dealer_card: str) -> Action:
     player_total = player_hand.value()
     dealer_upcard_value = dealer_value(dealer_card)
 
+  # Basic strategy rules for soft totals
+    if player_hand.is_soft():
+        if player_total >= 19:
+            return Action.STAND
+        elif player_total == 18:
+            if dealer_upcard_value in [2, 7, 8]:
+                return Action.STAND
+            elif dealer_upcard_value in [3, 4, 5, 6]:
+                return Action.DOUBLE
+            else:  # dealer_upcard_value in [9, 10, 11]
+                return Action.HIT
+        elif player_total == 17:
+            if dealer_upcard_value in [3, 4, 5, 6]:
+                return Action.DOUBLE
+            else:
+                return Action.HIT
+        elif player_total in [15, 16]:
+            if dealer_upcard_value in [4, 5, 6]:
+                return Action.DOUBLE
+            else:
+                return Action.HIT
+        elif player_total in [13, 14]:
+            if dealer_upcard_value in [5, 6]:
+                return Action.DOUBLE
+            else:
+                return Action.HIT
+        else:  # player_total <= 12 (soft A-A)
+            return Action.HIT
+        
     # Basic strategy rules for hard totals
     if player_total >= 17:
         return Action.STAND
@@ -46,3 +75,4 @@ def basic_strategy(player_hand: Hand, dealer_card: str) -> Action:
             return Action.HIT
     else:  # player_total <= 8
         return Action.HIT
+
