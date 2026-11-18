@@ -43,3 +43,15 @@ def test_hard_hand_strategy(cards, dealer, expected):
 def test_soft_hand_strategy(cards, dealer, expected):
     hand = make_hand(cards)
     assert basic_strategy(hand, dealer) == expected
+
+@pytest.mark.parametrize("cards, dealer, expected", [
+    # cards          dealer  expected
+    (["4", "3", "4"], "6",   Action.HIT),  # hard 11 after three cards
+    (["2", "3", "5"], "5",   Action.HIT), # hard 10 after three cards
+    (["A", "2", "4"], "4",   Action.HIT),  # soft 17 after three cards
+    (["A", "3", "4"], "4",   Action.STAND),  # soft 18 after three cards
+    (["6","5"], "6", Action.DOUBLE),  # hard 11 after two cards (control)
+])
+def test_cannot_double_after_two_cards(cards, dealer, expected):
+    hand = make_hand(cards)
+    assert basic_strategy(hand, dealer) == expected

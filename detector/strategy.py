@@ -12,7 +12,7 @@ def dealer_value(card: str) -> int:
         return 11
     return CARD_VALUES[card]
 
-def basic_strategy(player_hand: Hand, dealer_card: str) -> Action:
+def _table_action(player_hand: Hand, dealer_card: str) -> Action:
     player_total = player_hand.value()
     dealer_upcard_value = dealer_value(dealer_card)
 
@@ -76,3 +76,11 @@ def basic_strategy(player_hand: Hand, dealer_card: str) -> Action:
     else:  # player_total <= 8
         return Action.HIT
 
+def basic_strategy(player_hand: Hand, dealer_card: str) -> Action:
+    # Call table action and check if answer is allowed
+    action = _table_action(player_hand, dealer_card)
+    if action == Action.DOUBLE and len(player_hand.cards) > 2:
+        if player_hand.is_soft() and player_hand.value() == 18:  # Cannot double after two cards
+            return Action.STAND 
+        return Action.HIT  
+    return action
